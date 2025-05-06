@@ -4,6 +4,7 @@ import cartReducer from './reducer/cartReducer';
 import authReducer from '../redux/reducer/authSlice';
 import wishReducer from '../redux/reducer/wishSlice';
 import remTimeReducer from '../redux/reducer/timeSlice';
+import userReducer from '../redux/reducer/userSlice';
 
 
 
@@ -12,7 +13,8 @@ const store = configureStore({
     cart: cartReducer,
     auth: authReducer,
     wish: wishReducer,
-    time: remTimeReducer
+    time: remTimeReducer,
+    user: userReducer
   },
   devTools: process.env.NODE_ENV !== 'production', // Redux DevTools in development
 });

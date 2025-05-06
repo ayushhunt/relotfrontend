@@ -1,0 +1,30 @@
+{
+  "rules": [
+    {
+      "pattern": "**",
+      "description": "Frontend (Next.js) project rules",
+      "rules": [
+        "Strictly use TypeScript. Avoid 'any' and unsafe types.",
+        "make fully responsive for all devices",
+        "State management must use redux if needed.",
+        "Use Server Components by default. Use Client Components only when needed (interactivity).",
+        "Do NOT hardcode dynamic data . Always fetch it from backend APIs.",
+        "All API calls must be organized inside a `/services` directory.",
+        "Use fetch/SWR/React Query to interact with backend APIs, depending on need.",
+        "Pages and components must be cleanly separated.",
+        "SEO optimization: Always set page <title> and meta descriptions.",
+        "Environment variables (e.g., backend base URL) must be used, not hardcoded.",
+        "Write unit tests for critical pages, components, and services.",
+        "Follow clean folder structure (components, services, hooks, utils).",
+        "Use Prettier + ESLint to maintain consistent code style.",
+        "make sure to use tailwind css for styling",
+        "make sure it is scalable and easy to maintain",
+        "make sure to use the best practices for the project",
+        "make sure to  use best component library like shadcn/ui",
+        "use dynamic routing for pages if required",
+        "follow the architecture of big ecommerce websites like amazon, flipkart, etc."
+        
+      ]
+    }
+  ]
+}
