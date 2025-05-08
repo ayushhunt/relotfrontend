@@ -14,7 +14,7 @@ import Head from "next/head";
 
 export default function ProfileInformationPage() {
   const dispatch = useDispatch();
-  const { profile, loading, error } = useSelector((state: RootState) => state.user);
+  const { profile, loading, error } = useSelector((state) => state.user);
   const [editSection, setEditSection] = useState<string | null>(null);
   const [form, setForm] = useState<UserProfile | null>(null);
 
@@ -28,16 +28,16 @@ export default function ProfileInformationPage() {
       .catch((err) => dispatch(setError(err.message)));
   }, [dispatch]);
 
-  const handleEdit = (section: string) => setEditSection(section);
+  const handleEdit = (section) => setEditSection(section);
   const handleCancel = () => {
     setEditSection(null);
     setForm(profile);
   };
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     if (!form) return;
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-  const handleGenderChange = (value: "male" | "female") => {
+  const handleGenderChange = (value) => {
     if (!form) return;
     setForm({ ...form, gender: value });
   };
@@ -48,7 +48,7 @@ export default function ProfileInformationPage() {
       const updated = await updateUserProfile(form);
       dispatch(setUser(updated));
       setEditSection(null);
-    } catch (err: any) {
+    } catch (err) {
       dispatch(setError(err.message));
     }
   };

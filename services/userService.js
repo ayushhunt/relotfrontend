@@ -1,8 +1,6 @@
-import { UserProfile } from '../types/user';
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export async function fetchUserProfile(): Promise<UserProfile> {
+export async function fetchUserProfile() {
   const res = await fetch(`${API_BASE_URL}/user/profile`, {
     credentials: 'include',
   });
@@ -10,7 +8,7 @@ export async function fetchUserProfile(): Promise<UserProfile> {
   return res.json();
 }
 
-export async function updateUserProfile(data: Partial<UserProfile>): Promise<UserProfile> {
+export async function updateUserProfile(data) {
   const res = await fetch(`${API_BASE_URL}/user/profile`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },

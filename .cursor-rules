@@ -4,7 +4,7 @@
       "pattern": "**",
       "description": "Frontend (Next.js) project rules",
       "rules": [
-        "Strictly use TypeScript. Avoid 'any' and unsafe types.",
+        "use javascript.",
         "make fully responsive for all devices",
         "State management must use redux if needed.",
         "Use Server Components by default. Use Client Components only when needed (interactivity).",

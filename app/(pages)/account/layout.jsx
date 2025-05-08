@@ -12,7 +12,7 @@ const navItems = [
   { label: 'PAN Card Information', href: '/account/pancard-information' },
 ];
 
-export default function AccountLayout({ children }: { children: React.ReactNode }) {
+export default function AccountLayout({ children }) {
   const pathname = usePathname();
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">

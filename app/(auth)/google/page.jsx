@@ -1,16 +1,14 @@
-// app/auth/google/callback/page.tsx or pages/auth/google/callback.tsx (depending on routing strategy)
-"use client"; // if using app router
+"use client";
 
 import { useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation'; // or 'next/router' if pages router
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { setToken } from '../../redux/reducer/authSlice'; // adjust import path
+import { setToken } from '../../redux/reducer/authSlice';
 
 const GoogleCallbackPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
-  //const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
     const token = searchParams.get('accessToken');
