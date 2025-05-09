@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Star } from 'lucide-react';
-import { getRelatedProducts } from '../../lib/products/products';
+import { getRelatedProducts } from '../../lib/products';
 
 export default function RelatedProducts({ productId, category }) {
   const [relatedProducts, setRelatedProducts] = useState([]);

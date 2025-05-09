@@ -6,26 +6,38 @@ import Image from "next/image";
 import engFlag from "./images/eng.jpg";
 import franceFlag from "./images/france.png";
 import germanFlag from "./images/german.avif";
-import { Search, Heart, User, ShoppingBag, ChevronDown } from "lucide-react";
+import {
+  Search,
+  Heart,
+  User,
+  LogOut,
+  ShoppingBag,
+  ChevronDown,
+} from "lucide-react";
 import { connect, useSelector } from "react-redux";
 import CartDailog from "../components/Cart/CartDailog";
 import WishlistDailog from "../components/WishlistDailog";
+import { setloginStatus } from "../redux/reducer/loginSlice";
+//import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const Navbar = ({ cartTotalQuantity }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const items = useSelector((state) => state.cart.items);
+  //const loginStatus = useSelector((state) => state.auth.loginStatus);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // Implement search functionality
+
     console.log("Searching for:", searchQuery);
   };
 
-  const handleWishlist = () => {
-    // Implement wishlist functionality
-    console.log("Wishlist clicked");
+  const handleLogout = () => {
+    const dispatch = useDispatch();
+    dispatch(setloginStatus(false));
   };
+
   return (
     <header className="w-full border-b border-gray-200 ">
       {/* Top navbar */}
@@ -63,14 +75,13 @@ const Navbar = ({ cartTotalQuantity }) => {
 
         {/* Icons */}
         <div className="flex items-center space-x-4">
-          {/* <Link href="/wishlist" className="hidden sm:block">
-            <Heart className="h-6 w-6" />
-          </Link> */}
           <WishlistDailog />
-          <Link href="/login">
-            <User className="h-6 w-6" />
-          </Link>
-
+          
+         
+              <Link href="/login">
+                <User className="h-6 w-6 text-indigo-600" />
+              </Link>
+           
           <div className="relative">
             <CartDailog />
           </div>
@@ -89,20 +100,20 @@ const Navbar = ({ cartTotalQuantity }) => {
             </Link>
             <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md py-1 z-10 hidden group-hover:block">
               <Link
-                href="/products/?category=women/?search=handbags"
+                href="/products/?category=women&search=handbags"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Handbags
               </Link>
               <Link
-                href="/products/?category=women/?search=wallets-and-small-leather-goods"
+                href="/products/?category=women&search=wallets-and-small-leather-goods"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Wallets and Small Leather Goods
               </Link>
               <div className="relative group/submenu">
                 <Link
-                  href="/products/?category=women/?search=accessories"
+                  href="/products/?category=women&search=accessories"
                   className="flex items-center justify-between px-4 py-3 text-sm hover:bg-gray-100"
                 >
                   Accessories
@@ -110,19 +121,19 @@ const Navbar = ({ cartTotalQuantity }) => {
                 </Link>
                 <div className="absolute left-full top-0 w-64 bg-white shadow-lg rounded-md py-1 z-20 hidden group-hover/submenu:block">
                   <Link
-                    href="products/?category=women/?search=jewelry"
+                    href="products/?category=women&search=jewelry"
                     className="block px-4 py-3 text-sm hover:bg-gray-100"
                   >
                     Jewelry
                   </Link>
                   <Link
-                    href="products/?category=women/?search=scarves"
+                    href="products/?category=women&search=scarves"
                     className="block px-4 py-3 text-sm hover:bg-gray-100"
                   >
                     Scarves
                   </Link>
                   <Link
-                    href="products/?category=women/?search=belts"
+                    href="products/?category=women&search=belts"
                     className="block px-4 py-3 text-sm hover:bg-gray-100"
                   >
                     Belts
@@ -131,7 +142,7 @@ const Navbar = ({ cartTotalQuantity }) => {
               </div>
               <div className="relative group/submenu">
                 <Link
-                  href="products/?category=women/?search=travel"
+                  href="products/?category=women&search=travel"
                   className="flex items-center justify-between px-4 py-3 text-sm hover:bg-gray-100"
                 >
                   Travel
@@ -139,19 +150,19 @@ const Navbar = ({ cartTotalQuantity }) => {
                 </Link>
                 <div className="absolute left-full top-0 w-64 bg-white shadow-lg rounded-md py-1 z-20 hidden group-hover/submenu:block">
                   <Link
-                    href="products/?category=women/?search=luggage"
+                    href="products/?category=women&search=luggage"
                     className="block px-4 py-3 text-sm hover:bg-gray-100"
                   >
                     Luggage
                   </Link>
                   <Link
-                    href="products/?category=women/?search=travel-accessories"
+                    href="products/?category=women&search=travel-accessories"
                     className="block px-4 py-3 text-sm hover:bg-gray-100"
                   >
                     Travel Accessories
                   </Link>
                   <Link
-                    href="products/?category=women/?search=travel-bags"
+                    href="products/?category=women&search=travel-bags"
                     className="block px-4 py-3 text-sm hover:bg-gray-100"
                   >
                     Travel Bags
@@ -169,20 +180,20 @@ const Navbar = ({ cartTotalQuantity }) => {
             </Link>
             <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md py-1 z-10 hidden group-hover:block">
               <Link
-                href="products/?category=men/?search=bags"
+                href="products/?category=men&search=bags"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Bags
               </Link>
               <Link
-                href="products/?category=men/?search=wallets-and-small-leather-goods"
+                href="products/?category=men&search=wallets-and-small-leather-goods"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Wallets and Small Leather Goods
               </Link>
               <div className="relative group/submenu">
                 <Link
-                  href="products/?category=men/?search=accessories"
+                  href="products/?category=men&search=accessories"
                   className="flex items-center justify-between px-4 py-3 text-sm hover:bg-gray-100"
                 >
                   Accessories
@@ -190,19 +201,19 @@ const Navbar = ({ cartTotalQuantity }) => {
                 </Link>
                 <div className="absolute left-full top-0 w-64 bg-white shadow-lg rounded-md py-1 z-20 hidden group-hover/submenu:block">
                   <Link
-                    href="products/?category=men/?search=belts"
+                    href="products/?category=men&search=belts"
                     className="block px-4 py-3 text-sm hover:bg-gray-100"
                   >
                     Belts
                   </Link>
                   <Link
-                    href="products/?category=men/?search=cardholders"
+                    href="products/?category=men&search=cardholders"
                     className="block px-4 py-3 text-sm hover:bg-gray-100"
                   >
                     Card Holders
                   </Link>
                   <Link
-                    href="products/?category=men/?search=keyholders"
+                    href="products/?category=men&search=keyholders"
                     className="block px-4 py-3 text-sm hover:bg-gray-100"
                   >
                     Key Holders
@@ -219,25 +230,25 @@ const Navbar = ({ cartTotalQuantity }) => {
                 </Link>
                 <div className="absolute left-full top-0 w-64 bg-white shadow-lg rounded-md py-1 z-20 hidden group-hover/submenu:block">
                   <Link
-                    href="products/?category=men/?search=luggage"
+                    href="products/?category=men&search=luggage"
                     className="block px-4 py-3 text-sm hover:bg-gray-100"
                   >
                     Luggage
                   </Link>
                   <Link
-                    href="products/?category=men/?search=travel-accessories"
+                    href="products/?category=men&search=travel-accessories"
                     className="block px-4 py-3 text-sm hover:bg-gray-100"
                   >
                     Travel Accessories
                   </Link>
                   <Link
-                    href="products/?category=men/?search=travel-bags"
+                    href="products/?category=men&search=travel-bags"
                     className="block px-4 py-3 text-sm hover:bg-gray-100"
                   >
                     Travel Bags
                   </Link>
                   <Link
-                    href="products/?category=men/?search=shaving-kit-bags"
+                    href="products/?category=men&search=shaving-kit-bags"
                     className="block px-4 py-3 text-sm hover:bg-gray-100"
                   >
                     Shaving Kit Bags
@@ -256,25 +267,25 @@ const Navbar = ({ cartTotalQuantity }) => {
             {/* Dropdown would go here */}
             <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md py-1 z-10 hidden group-hover:block">
               <Link
-                href="products/?category=fragrances/?search=perfume"
+                href="products/?category=fragrances&search=perfume"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Perfume
               </Link>
               <Link
-                href="products/?category=fragrances/?search=body-mist"
+                href="products/?category=fragrances&search=body-mist"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Body Mist
               </Link>
               <Link
-                href="products/?category=fragrances/?search=roll-on"
+                href="products/?category=fragrances&search=roll-on"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Roll-on
               </Link>
               <Link
-                href="products/?category=fragrances/?search=fragrances-of-india"
+                href="products/?category=fragrances&search=fragrances-of-india"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Fragrances of India
@@ -292,25 +303,25 @@ const Navbar = ({ cartTotalQuantity }) => {
             {/* Dropdown would go here */}
             <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md py-1 z-10 hidden group-hover:block">
               <Link
-                href="products/?category=bags/?search=relot-colourmania"
+                href="products/?category=bags&search=relotcolourmania"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Relot Colourmania
               </Link>
               <Link
-                href="products/?category=bags/?search=men-bags"
+                href="products/?category=bags&search=men-bags"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Men Bags
               </Link>
               <Link
-                href="products/?category=bags/?search=women-small-leather-bags"
+                href="products/?category=bags&search=women-small-leather-bags"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Women small Leather Goods
               </Link>
               <Link
-                href="products/?category=bags/?search=men-small-leather-bags"
+                href="products/?category=bags&search=men-small-leather-bags"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Men small Leather Goods
@@ -327,19 +338,19 @@ const Navbar = ({ cartTotalQuantity }) => {
             {/* Dropdown would go here */}
             <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md py-1 z-10 hidden group-hover:block">
               <Link
-                href="products/?category=services/?search=personalisation"
+                href="products/?category=services&search=personalisation"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Personalisation
               </Link>
               <Link
-                href="products/?category=services/?search=relot-repairs"
+                href="products/?category=services&search=relot-repairs"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Relot Repairs
               </Link>
               <Link
-                href="products/?category=services/?search=art-of-gifting"
+                href="products/?category=services&search=art-of-gifting"
                 className="block px-4 py-3 text-sm hover:bg-gray-100"
               >
                 Art og Gifting

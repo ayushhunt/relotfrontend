@@ -10,16 +10,16 @@ import "swiper/css";
 import "swiper/css/effect-fade";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import { SET_CART_ITEMS } from "./redux/types";
-import { setWish } from "./redux/reducer/wishSlice";
+import { AddWish, setWish } from "./redux/reducer/wishSlice";
 import { useEffect } from "react";
+import api from "./lib/api";
 
 
 export default function Home() {
   
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
+  //const token = useSelector((state) => state.auth.token);
   const wishList = useSelector((state) => state.wish.wishlist); 
   const images = [
     "https://relot.in/wp-content/uploads/2025/01/couple-winter-cloths-studio_1303-5887.avif",
@@ -57,45 +57,33 @@ export default function Home() {
   const fetchProducts = async () => {
     
     try {
-      const res = await axios.get("http://localhost:3000/v1/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      dispatch({
-        type: SET_CART_ITEMS,
-        payload: res.data.data.items,
-      });
+      const res = await api.get('/v1/'); // baseURL is already there
+      console.log(res.data.data.items);
+    dispatch({
+      type: SET_CART_ITEMS,
+      payload: res.data.data.items,
+    });
     } catch (error) {
       console.log(error);
     }
   };
 
-  const fetchWishProducts = async () => {
-    
+  const fetchWishProducts = async () => {   
     try {
-      const res = await axios.get(`http://localhost:3000/v1/wish/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await api.get('/v1/wish');
       const items = res.data?.data?.items || [];
 
       console.log(items)
-      dispatch(setWish(items));
+      dispatch(AddWish(items));
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
   useEffect(() => {
-    debugger
-    if (token) {
-      fetchProducts();
-      fetchWishProducts();
-      console.log(wishList)
-    }
-  }, [token]);
+    fetchWishProducts();
+   fetchProducts();
+  },[dispatch]);
 
 
   return (

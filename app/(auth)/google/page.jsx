@@ -13,13 +13,9 @@ const GoogleCallbackPage = () => {
   useEffect(() => {
     const token = searchParams.get('accessToken');
 
-    if (token) {
-      console.log("Token received from Google OAuth:", token);
-      dispatch(setToken(token));
+   
       router.push('/');
-    } else {
-      console.error("No access token found in URL.");
-    }
+    
   }, [searchParams, dispatch, router]);
 
   return (

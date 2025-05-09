@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { Star, User } from 'lucide-react';
-import { getProductReviews } from '../../lib/products/products';
+import { getProductReviews } from '../../lib/review';
 
 export default function ProductReviews({ productId }) {
   const [reviews, setReviews] = useState([]);
