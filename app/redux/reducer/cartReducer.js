@@ -1,4 +1,4 @@
-import { ADD_ITEM_TO_CART, REMOVE_ITEM_FROM_CART, UPDATE_CART_ITEM_QUANTITY, SET_CART_ITEMS } from '../types';
+import { ADD_ITEM_TO_CART, REMOVE_ITEM_FROM_CART, UPDATE_CART_ITEM_QUANTITY,SET_CART_ITEMS } from '../types';
 
 const initialState = {
   items: [], // Array to hold cart items
@@ -11,23 +11,15 @@ const cartReducer = (state = initialState, action) => {
         ...state,
         items: action.payload,
       };
-
     case ADD_ITEM_TO_CART:
-      console.log("Current cart items:", state.items);
-      console.log("Action payload:", action.payload);
-      
-      // Use _id instead of id for comparison
-      const existingItemIndex = state.items.findIndex(
-        item => item._id === action.payload._id
-      );
-      
-      console.log("Adding item to cart:", action.payload);
-      
+      // Check if the item already exists in the cart
+      const existingItemIndex = state.items.findIndex(item => item.id === action.payload.id);
+
       if (existingItemIndex >= 0) {
-        // If item exists, increase its quantity
+        // If it exists, increase the quantity
         const updatedItems = state.items.map(item =>
-          item._id === action.payload._id
-            ? { ...item, quantity: (item.quantity || 1) + 1 }
+          item.id === action.payload.id
+            ? { ...item, quantity: item.quantity + 1 }
             : item
         );
         return {
@@ -35,7 +27,7 @@ const cartReducer = (state = initialState, action) => {
           items: updatedItems,
         };
       } else {
-        // If item doesn't exist, add it with quantity 1
+        // If it doesn't exist, add it to the cart
         return {
           ...state,
           items: [...state.items, { ...action.payload, quantity: 1 }],
@@ -45,15 +37,15 @@ const cartReducer = (state = initialState, action) => {
     case REMOVE_ITEM_FROM_CART:
       return {
         ...state,
-        items: state.items.filter(item => item._id !== action.payload),
+        items: state.items.filter(item => item.id !== action.payload),
       };
 
     case UPDATE_CART_ITEM_QUANTITY:
       return {
         ...state,
         items: state.items.map(item =>
-          item._id === action.payload.itemId
-            ? { ...item, quantity: parseInt(action.payload.quantity) }
+          item.id === action.payload.itemId
+            ? { ...item, quantity: parseInt(action.payload.quantity) } // Ensure quantity is a number
             : item
         ),
       };

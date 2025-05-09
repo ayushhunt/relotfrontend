@@ -4,27 +4,22 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Heart, ShoppingCart, Star } from 'lucide-react';
-import { addItemToCart } from '../../redux/actions/cartActions';
-import { addToWishlist } from '../../lib/wishlist';
+import { addToCart } from '../../lib/products/products';
+import { addToWishlist } from '../../lib/products/products';
 import { toast } from 'react-hot-toast';
-import { connect } from 'react-redux';
 
-
-function ProductDetails({ product,addItem }) {
+export default function ProductDetails({ product }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   
-  const handleAddToCart = async (e) => {
-    e.stopPropagation();
-    const cartItem = {
-      _id: product._id,
-      name: product.name,
-      price: product.price,
-      image: product.images?.[0],
-      quantity: 1
-    };
-    addItem(cartItem);
-    toast.success('Added to cart!');
+  const handleAddToCart = async () => {
+    try {
+      await addToCart(product.id, quantity);
+      toast.success(`${product.name} added to cart!`);
+    } catch (error) {
+      toast.error('Failed to add to cart');
+      console.error(error);
+    }
   };
   
   const handleAddToWishlist = async () => {
@@ -170,12 +165,3 @@ function ProductDetails({ product,addItem }) {
     </div>
   );
 }
-
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addItem: (item) => dispatch(addItemToCart(item)),
-  };
-};
-
-export default connect(null, mapDispatchToProps)(ProductDetails);

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
-function wishlist({clearWholeWish}) {
+export default function wishlist() {
   const token = useSelector((state) => state.auth.token);
   const [products, setProducts] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -31,7 +31,6 @@ function wishlist({clearWholeWish}) {
   };
 
   const ClearWishList = async () => {
-    clearWholeWish(clearWish());
     try {
       const res = await axios.delete("http://localhost:3000/v1/wish/clear", {
         headers: {
@@ -196,11 +195,3 @@ function wishlist({clearWholeWish}) {
     </>
   );
 }
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    clearWholeWish: () => dispatch(clearWholeWish()),
-  };
-};
-
-export default connect(null, mapDispatchToProps)(wishlist);

@@ -1,12 +1,14 @@
+// app/products/[id]/page.jsx
+import { Metadata } from 'next';
 import ProductDetails from '../../../components/Product/ProductDetails';
 import RelatedProducts from '../../../components/Product/RelatedProduct';
 import ProductReviews from '../../../components/Product/ProductReview';
 import AddReview from '../../../components/Product/AddReview'
-import { getProductById} from '../../../lib/products'
-import { getUserReview } from '../../../lib/review';
+import { getProductById} from '../../../lib/products/products'
+
 //Generate metadata for SEO
 export async function generateMetadata({ params }) {
-  const resolvedParams = await params;
+    const resolvedParams = await params;
   const productData = await getProductById(resolvedParams.slug);
   const product = productData.data;
   return {
@@ -43,8 +45,6 @@ export default async function ProductPage({ params }) {
   const resolvedParams = await params;
   const productData = await getProductById(resolvedParams.slug);
   const product = productData.data;
-
-
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="bg-white rounded-lg shadow-md p-6">

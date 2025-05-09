@@ -37,7 +37,7 @@ export default function ProductsClient() {
         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
         .join('&');
 
-      const response = await fetch(`http://localhost:3000/v1/products?${queryString}`); //
+      const response = await fetch(`http://localhost:3000/v1/products`); //?${queryString}
       const result = await response.json();
       // Update to match backend response structure
       if (result.success) {
@@ -88,10 +88,8 @@ export default function ProductsClient() {
         ) : (
           'All Products'
         )}
-        
       </h1>
-        {currentFilters.category}
-        
+
       <div className="flex flex-col md:flex-row gap-6">
         <div className="w-full md:w-64 flex-shrink-0">
           <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">

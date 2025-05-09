@@ -3,10 +3,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Check, X, Lock, Mail, User, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
-import { useAuth } from '../../context/AuthContext';
-
+import { useDispatch } from 'react-redux';
+import { setToken } from '../../redux/reducer/authSlice';
+import { useSelector } from 'react-redux';
 
 const RegisterPage = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -14,7 +16,7 @@ const RegisterPage = () => {
     password: '',
     confirmPassword: ''
   });
-  const { register } = useAuth();
+  
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
@@ -72,7 +74,7 @@ const RegisterPage = () => {
     const isValidPassword = Object.values(validations).every(value => value);
     
     if (!isValidPassword) {
-      return;
+      return; // Don't submit if validations fail
     }
     
     try {
@@ -83,13 +85,30 @@ const RegisterPage = () => {
         password: formData.password
       };
       
-      // Use AuthContext register function instead of direct fetch
-      await register(userData);
+      // This is where you would make the API call to your backend
+      // For now, let's just console log the data and navigate
+
+      const response = await fetch("http://localhost:3001/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || "Registration failed")
+      }
+
+
+      console.log('User registration data:', userData);
       
-      // Navigation is handled by AuthContext
+      // Navigate to login page after successful registration
+      router.push('/login');
     } catch (error) {
       console.error('Registration error:', error);
-      // Handle error display to user here
     }
   };
   
