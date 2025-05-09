@@ -1,32 +1,21 @@
 "use client";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
+import api from "../lib/api";
 import { Heart } from "lucide-react";
 import { useSelector } from "react-redux";
-import { setWish } from "../redux/reducer/wishSlice";
-import { useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
+import { clearWish } from "../redux/reducer/wishSlice";
 
-export default function WishlistDailog() {
-  const token = useSelector((state) => state.auth.token);
-  const wishList = useSelector((state) => state.wish.wishlist) || 0;
+function WishlistDailog({ clearWholeWish }) {
+  const wishList = useSelector((state) => state.wish.wishlist) || [];
   const [products, setProducts] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
   const dispatch = useDispatch();
 
   const deleteFromList = async (itemId) => {
-    console.log("Token:", token);
-    debugger;
     try {
-      const res = await axios.delete(
-        `http://localhost:3000/v1/wish/remove/${itemId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await api.delete(`v1/wish/remove/${itemId}`);
       const updatedProducts = wishList.filter(
         (item) => item.productId !== itemId
       );
@@ -41,16 +30,12 @@ export default function WishlistDailog() {
   };
 
   const ClearWishList = async () => {
-    debugger;
+    clearWholeWish(clearWish());
     try {
-      const res = await axios.delete("http://localhost:3000/v1/wish/clear", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      debugger
-      
-      dispatch(setWish([]))
+      const res = await api.delete("/v1/wish/clear");
+      debugger;
+
+      dispatch(setWish([]));
       console.log("Items deleted:", res.data);
     } catch (error) {
       console.log("Error in ClearWishList", error);
@@ -125,3 +110,10 @@ export default function WishlistDailog() {
     </div>
   );
 }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    clearWholeWish: () => dispatch(clearWish()),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(WishlistDailog);

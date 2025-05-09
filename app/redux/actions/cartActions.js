@@ -22,11 +22,9 @@ export const updateCartItemQuantity = (itemId, quantity) => {
   };
 };
 
-export const fetchUserCart = () => async (dispatch) => {
-  const token = useSelector((state) => state.auth.token);
-
+// Modified to accept token as parameter
+export const fetchUserCart = (token) => async (dispatch) => {
   if (!token) {
-    // User is not authenticated — optional: reset cart
     dispatch({ type: SET_CART_ITEMS, payload: [] });
     return;
   }
@@ -47,6 +45,7 @@ export const fetchUserCart = () => async (dispatch) => {
       quantity: item.quantity,
       image: item.image,
     }));
+    
     console.log('Fetched cart items:', items);
     dispatch({ type: SET_CART_ITEMS, payload: items });
   } catch (err) {
