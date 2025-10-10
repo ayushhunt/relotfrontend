@@ -18,7 +18,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-white px-6 md:px-16 py-12 text-black">
+    <footer className="bg-white px-6 md:px-16 py-12 text-black " style={{marginTop: '213px'}}>
       <div className="container mx-auto">
         {/* Main Footer Grid */}
         <div className="grid md:grid-cols-4 gap-10">

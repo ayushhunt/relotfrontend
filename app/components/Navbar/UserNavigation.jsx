@@ -1,47 +1,59 @@
-"use client"
-import { useState, useEffect, useRef } from 'react'
-import Link from "next/link"
-import { User, LogOut, ShoppingBag, Heart, Settings, ChevronRight, X, Mail, Phone } from "lucide-react"
-import toast from "react-hot-toast"
-import { useAuth } from '../../context/AuthContext'
+"use client";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import {
+  User,
+  LogOut,
+  ShoppingBag,
+  Heart,
+  Settings,
+  ChevronRight,
+  X,
+  Mail,
+  Phone,
+} from "lucide-react";
+import toast from "react-hot-toast";
+import { useAuth } from "../../context/AuthContext";
 
 const UserNavigation = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const { user, logout, loading } = useAuth()
-  const sidebarRef = useRef(null)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { user, logout, loading } = useAuth();
+  const sidebarRef = useRef(null);
 
   // Handle click outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        setIsSidebarOpen(false)
+        setIsSidebarOpen(false);
       }
-    }
+    };
 
     // Only add listener when sidebar is open
     if (isSidebarOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isSidebarOpen])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSidebarOpen]);
 
   const handleLogout = async (e) => {
     try {
-      e.preventDefault()
-      await logout()
-      setIsSidebarOpen(false)
-      toast.success("Logged out successfully")
+      e.preventDefault();
+      await logout();
+      setIsSidebarOpen(false);
+      toast.success("Logged out successfully");
     } catch (error) {
-      console.error("Logout failed:", error)
-      toast.error("Logout failed. Please try again.")
+      console.error("Logout failed:", error);
+      toast.error("Logout failed. Please try again.");
     }
-  }
+  };
 
   if (loading) {
-    return <div className="h-8 w-8 md:h-6 md:w-6 rounded-full bg-gray-200 animate-pulse" />
+    return (
+      <div className="h-8 w-8 md:h-6 md:w-6 rounded-full bg-gray-200 animate-pulse" />
+    );
   }
 
   return (
@@ -50,31 +62,36 @@ const UserNavigation = () => {
       <button
         className="flex items-center space-x-1 group relative"
         onClick={(e) => {
-          e.stopPropagation()
-          setIsSidebarOpen(!isSidebarOpen)
+          e.stopPropagation();
+          setIsSidebarOpen(!isSidebarOpen);
         }}
       >
         <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-black flex items-center justify-center text-white overflow-hidden group-hover:shadow-md transition-all">
           {user?.avatar ? (
-            <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
+            <img
+              src={user.avatar}
+              alt={user.name}
+              className="h-full w-full object-cover"
+            />
           ) : (
             <User className="h-5 w-5 md:h-6 md:w-6" />
           )}
         </div>
       </button>
 
-    
       <div
         ref={sidebarRef}
-        className={`fixed top-0 -right-4 h-screen w-[280px] md:w-[380px] bg-white z-[80] 
+        className={`fixed top-0 -right-4 h-full w-[280px] md:w-[380px] bg-white z-[80] 
           transform transition-transform ease-in-out duration-300 ${
-            isSidebarOpen ? 'translate-x-4' : 'translate-x-full'
+            isSidebarOpen ? "" : "translate-x-full"
           }`}
-          // style={{right: '6px'}}
+        // style={{right: '6px'}}
       >
         {/* Header */}
         <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-100">
-          <h2 className="text-base sm:text-lg font-semibold text-gray-900">My Account</h2>
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+            My Account
+          </h2>
           <button
             onClick={() => setIsSidebarOpen(false)}
             className="p-1 hover:bg-gray-50 rounded-full text-gray-700 transition-colors"
@@ -89,13 +106,19 @@ const UserNavigation = () => {
             <div className="flex items-center space-x-3 mb-3">
               <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-black flex items-center justify-center text-white overflow-hidden">
                 {user?.avatar ? (
-                  <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
+                  <img
+                    src={user.avatar}
+                    alt={user.name}
+                    className="h-full w-full object-cover"
+                  />
                 ) : (
                   <User className="h-6 w-6 sm:h-7 sm:w-7" />
                 )}
               </div>
               <div>
-                <p className="font-semibold text-gray-900">{user.name || "User"}</p>
+                <p className="font-semibold text-gray-900">
+                  {user.name || "User"}
+                </p>
                 {user.email && (
                   <div className="flex items-center text-sm text-gray-500">
                     <Mail className="h-3 w-3 mr-1" />
@@ -116,9 +139,9 @@ const UserNavigation = () => {
         {/* Navigation Links */}
         <nav className="py-2">
           {[
-            { href: '/profile', icon: User, label: 'Profile' },
-            { href: '/wishlist', icon: Heart, label: 'Wishlist' },
-            { href: '/orders', icon: ShoppingBag, label: 'Orders' }
+            { href: "/profile", icon: User, label: "Profile" },
+            { href: "/wishlist", icon: Heart, label: "Wishlist" },
+            { href: "/orders", icon: ShoppingBag, label: "Orders" },
           ].map((item) => (
             <Link
               key={item.href}
@@ -155,7 +178,7 @@ const UserNavigation = () => {
         />
       )}
     </>
-  )
-}
+  );
+};
 
-export default UserNavigation
+export default UserNavigation;

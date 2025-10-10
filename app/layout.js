@@ -38,12 +38,12 @@ function LayoutContent({ children }) {
           <Navbar />
         </div>
       )}
-      <main className={`${
-  showLayout ? 'lining-nums pt-[144px] md:pt-[160px]' : ''
-} min-h-screen w-[90vw] max-w-[90vw] mx-auto overflow-x-hidden `}>
+      <main className={`${showLayout ? 'lining-nums relative top-209px' : ''
+        } min-h-screen w-[90vw] max-w-[90vw] mx-auto overflow-x-hidden `}
+        style={{top: '213px'}}>
         {children}
       </main>
-      <WhatsAppButton/>
+      <WhatsAppButton />
       <Toaster position="bottom-right" />
       {showLayout && <Footer />}
     </>
@@ -55,9 +55,9 @@ export default function RootLayout({ children }) {
     <html lang="en" className={playfair.variable}>
       <body className={`${playfair.className} antialiased bg-gray-100`}>
         <Provider store={store}>
-            <AuthProvider>
-              <LayoutContent>{children}</LayoutContent>
-            </AuthProvider>
+          <AuthProvider>
+            <LayoutContent>{children}</LayoutContent>
+          </AuthProvider>
         </Provider>
       </body>
     </html>

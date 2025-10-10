@@ -101,3 +101,7 @@ body {
     display: none !important;
   }
 }
+
+body {
+  zoom: 0.9;
+}

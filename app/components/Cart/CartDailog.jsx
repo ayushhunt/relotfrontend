@@ -1,24 +1,42 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { ShoppingCart, X, Plus, Minus, Trash2, Eye, Loader } from "lucide-react";
+import {
+  ShoppingCart,
+  X,
+  Plus,
+  Minus,
+  Trash2,
+  Eye,
+  Loader,
+} from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { setCartItems, setCartTotal, updateCartItemQuantity, removeItemFromCart, clearCart } from "../../redux/actions/cartActions";
-import { getCart, updateCartItem, removeCartItem, clearCart as clearAPICart } from "../../lib/cart";
-
+import {
+  setCartItems,
+  setCartTotal,
+  updateCartItemQuantity,
+  removeItemFromCart,
+  clearCart,
+} from "../../redux/actions/cartActions";
+import {
+  getCart,
+  updateCartItem,
+  removeCartItem,
+  clearCart as clearAPICart,
+} from "../../lib/cart";
 
 export default function CartDialog() {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [syncingWithAPI, setSyncingWithAPI] = useState(false);
-  
+
   // ✅ Fixed: Redux state with fallback defaults
   const cartItems = useSelector((state) => state.cart?.items || []);
   const totalAmount = useSelector((state) => state.cart?.totalPrice || 0);
-  
+
   const router = useRouter();
   const dialogRef = useRef(null);
 
@@ -28,7 +46,7 @@ export default function CartDialog() {
       try {
         setSyncingWithAPI(true);
         const response = await getCart();
-        
+
         if (response.success && response.data) {
           // Success: Update Redux store with API data
           dispatch(setCartItems(response.data.items || []));
@@ -36,7 +54,7 @@ export default function CartDialog() {
         }
       } catch (error) {
         console.error("Failed to fetch cart:", error);
-        
+
         if (error.response?.status === 401) {
           // User not logged in - keep using Redux state
           console.log("User not authenticated, using local cart state");
@@ -61,23 +79,30 @@ export default function CartDialog() {
     };
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
 
   // ✅ FIXED: Function to get a unique identifier for an item (product + variant)
   const getItemIdentifier = (item) => {
-    const productId = item.product?._id || item.productId || item.product || item.id;
+    const productId =
+      item.product?._id || item.productId || item.product || item.id;
     return { productId, variantId: item.variantId };
   };
 
   // ✅ FIXED: Safe function to get product ID from item
   const getProductId = (item) => {
-    return item.product?._id || item.productId || item.product || item.id || 'unknown';
+    return (
+      item.product?._id ||
+      item.productId ||
+      item.product ||
+      item.id ||
+      "unknown"
+    );
   };
 
   // ✅ Enhanced: Update quantity with fallback support - FIXED
@@ -88,7 +113,7 @@ export default function CartDialog() {
     const itemIdentifier = getItemIdentifier(item);
 
     // Validate productId exists
-    if (!itemIdentifier.productId || itemIdentifier.productId === 'unknown') {
+    if (!itemIdentifier.productId || itemIdentifier.productId === "unknown") {
       toast.error("Unable to update item - invalid product data");
       return;
     }
@@ -101,10 +126,14 @@ export default function CartDialog() {
 
     try {
       setLoading(true);
-      
+
       // Try to update via API first
-      const response = await updateCartItem(itemIdentifier.productId, newQuantity, itemIdentifier.variantId);
-      
+      const response = await updateCartItem(
+        itemIdentifier.productId,
+        newQuantity,
+        itemIdentifier.variantId
+      );
+
       if (response.success) {
         // Success: Update Redux store with API response
         dispatch(setCartItems(response.data.items || []));
@@ -114,29 +143,43 @@ export default function CartDialog() {
       }
     } catch (error) {
       console.error("Cart update error:", error);
-      
+
       if (error.response?.status === 401) {
         // User not logged in - update Redux state only
-        dispatch(updateCartItemQuantity({
-          itemId: item.id || `${itemIdentifier.productId}${itemIdentifier.variantId ? `-${itemIdentifier.variantId}` : ''}`,
-          productId: itemIdentifier.productId,
-          variantId: itemIdentifier.variantId,
-          quantity: newQuantity
-        }));
+        dispatch(
+          updateCartItemQuantity({
+            itemId:
+              item.id ||
+              `${itemIdentifier.productId}${
+                itemIdentifier.variantId ? `-${itemIdentifier.variantId}` : ""
+              }`,
+            productId: itemIdentifier.productId,
+            variantId: itemIdentifier.variantId,
+            quantity: newQuantity,
+          })
+        );
         toast.success("Quantity updated (Sign in to sync across devices)");
         return;
       } else if (error.response?.status === 400) {
         // Handle specific API errors (stock issues, etc.)
-        toast.error(error.response.data?.message || "Failed to update quantity");
+        toast.error(
+          error.response.data?.message || "Failed to update quantity"
+        );
         return;
       } else {
         // Other API errors - use Redux fallback
-        dispatch(updateCartItemQuantity({
-          itemId: item.id || `${itemIdentifier.productId}${itemIdentifier.variantId ? `-${itemIdentifier.variantId}` : ''}`,
-          productId: itemIdentifier.productId,
-          variantId: itemIdentifier.variantId,
-          quantity: newQuantity
-        }));
+        dispatch(
+          updateCartItemQuantity({
+            itemId:
+              item.id ||
+              `${itemIdentifier.productId}${
+                itemIdentifier.variantId ? `-${itemIdentifier.variantId}` : ""
+              }`,
+            productId: itemIdentifier.productId,
+            variantId: itemIdentifier.variantId,
+            quantity: newQuantity,
+          })
+        );
         toast.success("Quantity updated (Saved locally)");
         return;
       }
@@ -150,17 +193,20 @@ export default function CartDialog() {
     const itemIdentifier = getItemIdentifier(item);
 
     // Validate productId exists
-    if (!itemIdentifier.productId || itemIdentifier.productId === 'unknown') {
+    if (!itemIdentifier.productId || itemIdentifier.productId === "unknown") {
       toast.error("Unable to remove item - invalid product data");
       return;
     }
 
     try {
       setLoading(true);
-      
+
       // Try to remove via API first
-      const response = await removeCartItem(itemIdentifier.productId, itemIdentifier.variantId);
-      
+      const response = await removeCartItem(
+        itemIdentifier.productId,
+        itemIdentifier.variantId
+      );
+
       if (response.success) {
         // Success: Update Redux store with API response
         dispatch(setCartItems(response.data.items || []));
@@ -170,32 +216,50 @@ export default function CartDialog() {
       }
     } catch (error) {
       console.error("Cart remove error:", error);
-      
+
       if (error.response?.status === 401) {
         // User not logged in - remove from Redux only
-        dispatch(removeItemFromCart({
-          itemId: item.id || `${itemIdentifier.productId}${itemIdentifier.variantId ? `-${itemIdentifier.variantId}` : ''}`,
-          productId: itemIdentifier.productId,
-          variantId: itemIdentifier.variantId
-        }));
+        dispatch(
+          removeItemFromCart({
+            itemId:
+              item.id ||
+              `${itemIdentifier.productId}${
+                itemIdentifier.variantId ? `-${itemIdentifier.variantId}` : ""
+              }`,
+            productId: itemIdentifier.productId,
+            variantId: itemIdentifier.variantId,
+          })
+        );
         toast.success("Item removed (Sign in to sync across devices)");
         return;
       } else if (error.response?.status === 404) {
         // Item not found in API - remove from Redux anyway
-        dispatch(removeItemFromCart({
-          itemId: item.id || `${itemIdentifier.productId}${itemIdentifier.variantId ? `-${itemIdentifier.variantId}` : ''}`,
-          productId: itemIdentifier.productId,
-          variantId: itemIdentifier.variantId
-        }));
+        dispatch(
+          removeItemFromCart({
+            itemId:
+              item.id ||
+              `${itemIdentifier.productId}${
+                itemIdentifier.variantId ? `-${itemIdentifier.variantId}` : ""
+              }`,
+            productId: itemIdentifier.productId,
+            variantId: itemIdentifier.variantId,
+          })
+        );
         toast.success("Item removed from cart");
         return;
       } else {
         // Other API errors - use Redux fallback
-        dispatch(removeItemFromCart({
-          itemId: item.id || `${itemIdentifier.productId}${itemIdentifier.variantId ? `-${itemIdentifier.variantId}` : ''}`,
-          productId: itemIdentifier.productId,
-          variantId: itemIdentifier.variantId
-        }));
+        dispatch(
+          removeItemFromCart({
+            itemId:
+              item.id ||
+              `${itemIdentifier.productId}${
+                itemIdentifier.variantId ? `-${itemIdentifier.variantId}` : ""
+              }`,
+            productId: itemIdentifier.productId,
+            variantId: itemIdentifier.variantId,
+          })
+        );
         toast.success("Item removed (Saved locally)");
         return;
       }
@@ -208,10 +272,10 @@ export default function CartDialog() {
   const handleClearCart = async () => {
     try {
       setLoading(true);
-      
+
       // Try to clear API cart first
       const response = await clearAPICart();
-      
+
       if (response.success) {
         // Success: Clear Redux state
         dispatch(clearCart());
@@ -220,7 +284,7 @@ export default function CartDialog() {
       }
     } catch (error) {
       console.error("Clear cart error:", error);
-      
+
       if (error.response?.status === 401) {
         // User not logged in - clear Redux only
         dispatch(clearCart());
@@ -255,7 +319,7 @@ export default function CartDialog() {
   const handleProductClick = (item) => {
     setIsOpen(false);
     const productId = getProductId(item);
-    if (productId && productId !== 'unknown') {
+    if (productId && productId !== "unknown") {
       router.push(`/products/${productId}`);
     } else {
       toast.error("Unable to navigate - invalid product data");
@@ -270,14 +334,14 @@ export default function CartDialog() {
   // ✅ FIXED: Helper function to calculate final price with discount
   const getFinalPrice = (item) => {
     if (item.finalPrice) return item.finalPrice;
-    
+
     const basePrice = item.price || 0;
     const discount = item.discount || 0;
-    
+
     if (discount > 0) {
       return basePrice * (1 - discount / 100);
     }
-    
+
     return basePrice;
   };
 
@@ -286,15 +350,18 @@ export default function CartDialog() {
     const originalPrice = item.price || 0;
     const finalPrice = getFinalPrice(item);
     const discount = originalPrice - finalPrice;
-    return sum + (discount * (item.quantity || 1));
+    return sum + discount * (item.quantity || 1);
   }, 0);
 
-  const totalItems = (cartItems || []).reduce((sum, item) => sum + (item.quantity || 1), 0);
+  const totalItems = (cartItems || []).reduce(
+    (sum, item) => sum + (item.quantity || 1),
+    0
+  );
 
   // ✅ FIXED: Filter out invalid items before rendering with safe fallbacks
-  const validCartItems = (cartItems || []).filter(item => {
+  const validCartItems = (cartItems || []).filter((item) => {
     const productId = getProductId(item);
-    return productId && productId !== 'unknown' && item.name;
+    return productId && productId !== "unknown" && item.name;
   });
 
   return (
@@ -331,15 +398,17 @@ export default function CartDialog() {
       {/* Sidebar Cart */}
       <div
         ref={dialogRef}
-        className={`fixed top-0 right-0 h-screen bg-white shadow-xl z-[60] transform transition-transform duration-300 ease-in-out
+        className={`fixed top-0 right-0 h-full bg-white shadow-xl z-[60] transform transition-transform duration-300 ease-in-out
           w-full sm:w-[400px] md:w-[450px] lg:w-[500px]
-          ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+          ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
         {/* Header */}
         <div className="sticky top-0 bg-white z-10 border-b border-gray-100">
           <div className="flex items-center justify-between p-4 md:p-6">
             <div className="flex items-center gap-3">
-              <h2 className="text-lg md:text-xl font-semibold text-gray-900">Shopping Cart</h2>
+              <h2 className="text-lg md:text-xl font-semibold text-gray-900">
+                Shopping Cart
+              </h2>
               {syncingWithAPI && (
                 <Loader className="h-4 w-4 animate-spin text-red-600" />
               )}
@@ -356,7 +425,7 @@ export default function CartDialog() {
           {validCartItems.length > 0 && (
             <div className="px-4 md:px-6 pb-4 flex items-center justify-between">
               <span className="text-sm text-gray-600">
-                {totalItems} {totalItems === 1 ? 'item' : 'items'} in cart
+                {totalItems} {totalItems === 1 ? "item" : "items"} in cart
               </span>
               <button
                 onClick={handleClearCart}
@@ -378,8 +447,12 @@ export default function CartDialog() {
           ) : validCartItems.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center p-4 text-center">
               <ShoppingCart className="h-16 w-16 mb-4 text-gray-300" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Your cart is empty</h3>
-              <p className="text-sm text-gray-500 mb-4">Add some items to get started</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Your cart is empty
+              </h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Add some items to get started
+              </p>
               <button
                 onClick={handleContinueShopping}
                 className="px-6 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors text-sm font-medium"
@@ -393,11 +466,14 @@ export default function CartDialog() {
               {validCartItems.map((item, index) => {
                 const productId = getProductId(item);
                 const finalPrice = getFinalPrice(item);
-                const hasDiscount = item.discount > 0 && finalPrice < (item.price || 0);
-                
+                const hasDiscount =
+                  item.discount > 0 && finalPrice < (item.price || 0);
+
                 return (
                   <div
-                    key={`${productId}-${item.variantId || 'no-variant'}-${index}`}
+                    key={`${productId}-${
+                      item.variantId || "no-variant"
+                    }-${index}`}
                     className="flex gap-4 p-4 bg-white rounded-lg border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all"
                   >
                     {/* Product Image */}
@@ -406,8 +482,10 @@ export default function CartDialog() {
                       onClick={() => handleProductClick(item)}
                     >
                       <Image
-                        src={item.image || item.images?.[0] || '/placeholder.png'}
-                        alt={item.name || 'Product'}
+                        src={
+                          item.image || item.images?.[0] || "/placeholder.png"
+                        }
+                        alt={item.name || "Product"}
                         fill
                         className="object-cover rounded-md group-hover:opacity-75 transition-opacity"
                         sizes="(max-width: 768px) 80px, 96px"
@@ -425,12 +503,12 @@ export default function CartDialog() {
 
                     <div className="flex-1 min-w-0">
                       {/* Product Name */}
-                      <h3 
+                      <h3
                         className="font-medium text-sm md:text-base text-gray-900 truncate cursor-pointer hover:text-red-600 transition-colors leading-tight"
                         onClick={() => handleProductClick(item)}
-                        title={item.name || 'Product'}
+                        title={item.name || "Product"}
                       >
-                        {item.name || 'Unnamed Product'}
+                        {item.name || "Unnamed Product"}
                       </h3>
 
                       {/* Brand */}
@@ -485,7 +563,8 @@ export default function CartDialog() {
                             <span className="w-2 h-2 bg-red-400 rounded-full mr-1"></span>
                             Out of Stock
                           </span>
-                        ) : item.maxQuantity && item.quantity >= item.maxQuantity ? (
+                        ) : item.maxQuantity &&
+                          item.quantity >= item.maxQuantity ? (
                           <span className="inline-flex items-center text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-full">
                             <span className="w-2 h-2 bg-orange-400 rounded-full mr-1"></span>
                             Max Quantity Reached
@@ -513,13 +592,18 @@ export default function CartDialog() {
                           </span>
                           <button
                             onClick={() => handleQuantityChange(item, 1)}
-                            disabled={loading || item.inStock === false || (item.maxQuantity && item.quantity >= item.maxQuantity)}
+                            disabled={
+                              loading ||
+                              item.inStock === false ||
+                              (item.maxQuantity &&
+                                item.quantity >= item.maxQuantity)
+                            }
                             className="p-2 hover:bg-gray-200 text-gray-600 rounded-r-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             <Plus className="h-3 w-3 md:h-4 md:w-4" />
                           </button>
                         </div>
-                        
+
                         <button
                           onClick={() => handleRemoveItem(item)}
                           disabled={loading}
@@ -532,7 +616,8 @@ export default function CartDialog() {
                       {/* Item subtotal */}
                       <div className="mt-2 text-right">
                         <span className="text-sm font-medium text-gray-900">
-                          Subtotal: ₹{(finalPrice * (item.quantity || 1)).toFixed(2)}
+                          Subtotal: ₹
+                          {(finalPrice * (item.quantity || 1)).toFixed(2)}
                         </span>
                       </div>
                     </div>
@@ -551,7 +636,9 @@ export default function CartDialog() {
               {totalSavings > 0 && (
                 <div className="flex items-center justify-between text-sm text-green-600">
                   <span>Total Savings:</span>
-                  <span className="font-medium">₹{totalSavings.toFixed(2)}</span>
+                  <span className="font-medium">
+                    ₹{totalSavings.toFixed(2)}
+                  </span>
                 </div>
               )}
               <div className="flex items-center justify-between text-lg font-semibold text-gray-900">
@@ -571,7 +658,11 @@ export default function CartDialog() {
               </button>
               <button
                 onClick={handleCheckout}
-                disabled={validCartItems.length === 0 || loading || validCartItems.some(item => item.inStock === false)}
+                disabled={
+                  validCartItems.length === 0 ||
+                  loading ||
+                  validCartItems.some((item) => item.inStock === false)
+                }
                 className="flex items-center justify-center gap-2 px-4 py-3 text-sm md:text-base text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
               >
                 <ShoppingCart className="h-4 w-4 md:h-5 md:w-5" />
@@ -580,7 +671,7 @@ export default function CartDialog() {
             </div>
 
             {/* Out of stock warning */}
-            {validCartItems.some(item => item.inStock === false) && (
+            {validCartItems.some((item) => item.inStock === false) && (
               <div className="text-center">
                 <p className="text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg">
                   Some items are out of stock. Please remove them to proceed.
